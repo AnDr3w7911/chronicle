@@ -23,7 +23,6 @@ import io.github.mattpvaughn.chronicle.data.sources.plex.PlexConfig
 import io.github.mattpvaughn.chronicle.data.sources.plex.PlexPrefsRepo
 import io.github.mattpvaughn.chronicle.databinding.FragmentSettingsBinding
 import io.github.mattpvaughn.chronicle.features.player.MediaServiceConnection
-import io.github.mattpvaughn.chronicle.navigation.Navigator
 import io.github.mattpvaughn.chronicle.util.observeEvent
 import io.github.mattpvaughn.chronicle.views.getString
 import javax.inject.Inject
@@ -35,9 +34,6 @@ class SettingsFragment : Fragment() {
 
     @Inject
     lateinit var mediaServiceConnection: MediaServiceConnection
-
-    @Inject
-    lateinit var navigator: Navigator
 
     @Inject
     lateinit var plexLoginRepo: IPlexLoginRepo

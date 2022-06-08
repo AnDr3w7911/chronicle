@@ -16,6 +16,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import io.github.mattpvaughn.chronicle.R
 import io.github.mattpvaughn.chronicle.application.MainActivityViewModel.BottomSheetState.COLLAPSED
 import io.github.mattpvaughn.chronicle.application.MainActivityViewModel.BottomSheetState.EXPANDED
@@ -29,6 +32,7 @@ import io.github.mattpvaughn.chronicle.data.sources.plex.PlexConfig
 import io.github.mattpvaughn.chronicle.data.sources.plex.PlexPrefsRepo
 import io.github.mattpvaughn.chronicle.databinding.ActivityMainBinding
 import io.github.mattpvaughn.chronicle.features.currentlyplaying.CurrentlyPlayingFragment
+import io.github.mattpvaughn.chronicle.features.home.HomeFragmentDirections
 import io.github.mattpvaughn.chronicle.features.player.MediaPlayerService.Companion.ACTION_PLAYBACK_ERROR
 import io.github.mattpvaughn.chronicle.features.player.MediaPlayerService.Companion.PLAYBACK_ERROR_MESSAGE
 import io.github.mattpvaughn.chronicle.features.player.MediaServiceConnection
@@ -36,7 +40,6 @@ import io.github.mattpvaughn.chronicle.injection.components.ActivityComponent
 import io.github.mattpvaughn.chronicle.injection.components.DaggerActivityComponent
 import io.github.mattpvaughn.chronicle.injection.modules.ActivityModule
 import io.github.mattpvaughn.chronicle.injection.scopes.ActivityScope
-import io.github.mattpvaughn.chronicle.navigation.Navigator
 import io.github.mattpvaughn.chronicle.util.observeEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,8 +63,8 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var plexLoginRepo: IPlexLoginRepo
 
-    @Inject
-    lateinit var navigator: Navigator
+//    @Inject
+//    lateinit var navigator: Navigator
 
     @Inject
     lateinit var plexPrefsRepo: PlexPrefsRepo
@@ -110,23 +113,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.errorMessage.observeEvent(this) { errorMessage ->
             Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
         }
-
-        binding.bottomNav.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_settings -> navigator.showSettings()
-                R.id.nav_library -> navigator.showLibrary()
-                R.id.nav_home -> navigator.showHome()
-                else -> throw NoWhenBranchMatchedException("Unknown bottom tab id: ${it.itemId}")
-            }
-            viewModel.minimizeCurrentlyPlaying()
-            return@setOnNavigationItemSelectedListener true
-        }
+        binding.bottomNav.setupWithNavController(navController = binding.fragNavHost.getFragment<NavHostFragment>().navController)
 
         if (savedInstanceState == null) {
             setupCurrentlyPlaying()
             plexLoginRepo.loginEvent.value?.let {
                 if (it.peekContent() == LOGGED_IN_FULLY) {
-                    navigator.showHome()
+//                    navigator.showHome()
                 }
             }
         }
@@ -148,17 +141,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.setBottomSheetState(COLLAPSED)
             return
         }
-        // default to activity back stack if navigator did not handle anything
-        if (!navigator.onBackPressed()) {
-            Timber.i("MainActivity super.onBackPressed()")
-            if (supportFragmentManager.backStackEntryCount == 0) {
-                // The prevent Q+ from leaking the activity internally, don't call
-                // super.onBackPressed() if at base fragment, manually end...
-                finishAfterTransition()
-            } else {
-                super.onBackPressed()
-            }
-        }
+        super.onBackPressed()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -233,7 +216,14 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.IO) {
                     val audiobook = bookRepository.getAudiobookAsync(openAudiobookWithId)
                     if (audiobook != null && audiobook != EMPTY_AUDIOBOOK) {
-                        navigator.showDetails(audiobook.id, audiobook.title, audiobook.isCached)
+//                        navigator.showDetails(audiobook.id, audiobook.title, audiobook.isCached)
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToAudiobookDetailsFragment(
+                                audiobook.id,
+                                audiobook.title,
+                                audiobook.isCached
+                            )
+                        findNavController(R.id.fragNavHost).navigate(action)
                     }
                 }
             }

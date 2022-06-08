@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/nav_home"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/nav_home"
         android:title="@string/tab_home" />
 
     <item
-        android:id="@+id/nav_library"
+        android:id="@+id/libraryFragment"
         android:icon="@drawable/nav_library"
         android:title="@string/tab_library" />
 
     <item
-        android:id="@+id/nav_settings"
+        android:id="@+id/settingsFragment"
         android:icon="@drawable/nav_settings"
         android:title="@string/tab_settings" />
 

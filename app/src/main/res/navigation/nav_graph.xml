@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_audiobookDetailsFragment"
+            app:destination="@id/audiobookDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.library.LibraryFragment"
+        android:label="LibraryFragment"
+        tools:layout="@layout/fragment_library">
+        <action
+            android:id="@+id/action_libraryFragment_to_audiobookDetailsFragment"
+            app:destination="@id/audiobookDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings"/>
+    <fragment
+        android:id="@+id/audiobookDetailsFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.bookdetails.AudiobookDetailsFragment"
+        android:label="AudiobookDetailsFragment"
+        tools:layout="@layout/fragment_audiobook_details">
+        <argument
+            android:name="audiobookId"
+            app:argType="integer" />
+        <argument
+            android:name="audiobookTitle"
+            app:argType="string" />
+        <argument
+            android:name="isAudiobookCached"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/onboarding_login"/>
+    <fragment
+        android:id="@+id/chooseServerFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.login.ChooseServerFragment"
+        android:label="ChooseServerFragment"
+        tools:layout="@layout/onboarding_plex_choose_server"/>
+    <fragment
+        android:id="@+id/chooseUserFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.login.ChooseUserFragment"
+        android:label="ChooseUserFragment"
+        tools:layout="@layout/onboarding_plex_choose_user"/>
+    <fragment
+        android:id="@+id/chooseLibraryFragment"
+        android:name="io.github.mattpvaughn.chronicle.features.login.ChooseLibraryFragment"
+        android:label="ChooseLibraryFragment"
+        tools:layout="@layout/onboarding_plex_choose_library"/>
+</navigation>

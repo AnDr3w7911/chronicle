@@ -20,7 +20,6 @@ import io.github.mattpvaughn.chronicle.data.sources.MediaSource
 import io.github.mattpvaughn.chronicle.data.sources.plex.PlexConfig
 import io.github.mattpvaughn.chronicle.databinding.FragmentAudiobookDetailsBinding
 import io.github.mattpvaughn.chronicle.features.player.MediaServiceConnection
-import io.github.mattpvaughn.chronicle.navigation.Navigator
 import io.github.mattpvaughn.chronicle.util.observeEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
@@ -39,9 +38,6 @@ class AudiobookDetailsFragment : Fragment() {
 
     @Inject
     lateinit var prefsRepo: PrefsRepo
-
-    @Inject
-    lateinit var navigator: Navigator
 
     @Inject
     lateinit var trackRepository: ITrackRepository
@@ -75,9 +71,9 @@ class AudiobookDetailsFragment : Fragment() {
 
         val binding = FragmentAudiobookDetailsBinding.inflate(inflater, container, false)
 
-        val inputId = requireArguments().getInt(ARG_AUDIOBOOK_ID)
-        val bookTitle = requireArguments().getString(ARG_AUDIOBOOK_TITLE) ?: ""
-        val inputCached = requireArguments().getBoolean(ARG_IS_AUDIOBOOK_CACHED)
+        val inputId = AudiobookDetailsFragmentArgs.fromBundle(requireArguments()).audiobookId
+        val bookTitle = AudiobookDetailsFragmentArgs.fromBundle(requireArguments()).audiobookTitle
+        val inputCached = AudiobookDetailsFragmentArgs.fromBundle(requireArguments()).isAudiobookCached
 
         viewModelFactory.inputAudiobook = Audiobook(
             id = inputId,

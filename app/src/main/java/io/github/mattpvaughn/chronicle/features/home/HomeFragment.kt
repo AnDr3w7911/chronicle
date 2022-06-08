@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import io.github.mattpvaughn.chronicle.R
 import io.github.mattpvaughn.chronicle.application.MainActivity
 import io.github.mattpvaughn.chronicle.data.local.PrefsRepo
@@ -19,7 +20,6 @@ import io.github.mattpvaughn.chronicle.databinding.FragmentHomeBinding
 import io.github.mattpvaughn.chronicle.features.library.AudiobookAdapter
 import io.github.mattpvaughn.chronicle.features.library.AudiobookSearchAdapter
 import io.github.mattpvaughn.chronicle.features.library.LibraryFragment.AudiobookClick
-import io.github.mattpvaughn.chronicle.navigation.Navigator
 import javax.inject.Inject
 
 class HomeFragment : Fragment() {
@@ -31,9 +31,6 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var prefsRepo: PrefsRepo
-
-    @Inject
-    lateinit var navigator: Navigator
 
     @Inject
     lateinit var plexConfig: PlexConfig
@@ -140,7 +137,8 @@ class HomeFragment : Fragment() {
     }
 
     fun openAudiobookDetails(audiobook: Audiobook) {
-        navigator.showDetails(audiobook.id, audiobook.title, audiobook.isCached)
+        val action = HomeFragmentDirections.actionHomeFragmentToAudiobookDetailsFragment(audiobook.id, audiobook.title, audiobook.isCached)
+        activity?.findNavController(R.id.fragNavHost)?.navigate(action)
     }
 
     companion object {

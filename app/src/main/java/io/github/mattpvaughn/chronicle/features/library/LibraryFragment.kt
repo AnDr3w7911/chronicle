@@ -11,6 +11,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy
@@ -29,7 +31,6 @@ import io.github.mattpvaughn.chronicle.data.local.PrefsRepo.Companion.VIEW_STYLE
 import io.github.mattpvaughn.chronicle.data.model.Audiobook
 import io.github.mattpvaughn.chronicle.data.sources.plex.PlexConfig
 import io.github.mattpvaughn.chronicle.databinding.FragmentLibraryBinding
-import io.github.mattpvaughn.chronicle.navigation.Navigator
 import io.github.mattpvaughn.chronicle.views.checkRadioButtonWithTag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,9 +54,6 @@ class LibraryFragment : Fragment() {
 
     @Inject
     lateinit var prefsRepo: PrefsRepo
-
-    @Inject
-    lateinit var navigator: Navigator
 
     @Inject
     lateinit var plexConfig: PlexConfig
@@ -213,7 +211,9 @@ class LibraryFragment : Fragment() {
     }
 
     private fun openAudiobookDetails(audiobook: Audiobook) {
-        navigator.showDetails(audiobook.id, audiobook.title, audiobook.isCached)
+        val action = LibraryFragmentDirections.actionLibraryFragmentToAudiobookDetailsFragment(audiobook.id, audiobook.title, audiobook.isCached)
+        activity?.findNavController(R.id.fragNavHost)?.navigate(action)
+//        (activity?.supportFragmentManager?.findFragmentById(R.id.fragNavHost) as NavHostFragment).navController.navigate(action)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
