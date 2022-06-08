@@ -181,7 +181,6 @@ class LibraryFragment : Fragment() {
                 Toast.makeText(context, it.getContentIfNotHandled(), LENGTH_SHORT).show()
             }
         }
-
         val behavior = (binding.filterView.layoutParams) as CoordinatorLayout.LayoutParams
         (behavior.behavior as BottomSheetBehavior).addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
@@ -219,6 +218,13 @@ class LibraryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        (activity as MainActivity).addOnBackCallback {
+            if (viewModel.isFilterShown.value == true) {
+                viewModel.setFilterMenuVisible(false)
+                return@addOnBackCallback true
+            }
+            return@addOnBackCallback false
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

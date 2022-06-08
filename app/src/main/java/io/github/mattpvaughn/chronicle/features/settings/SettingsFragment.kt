@@ -73,6 +73,10 @@ class SettingsFragment : Fragment() {
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -118,6 +122,13 @@ class SettingsFragment : Fragment() {
                 }
             }
         )
+        (activity as MainActivity).addOnBackCallback {
+            if (viewModel.isBottomSheetVisible()) {
+                viewModel.setBottomSheetVisibility(false)
+                return@addOnBackCallback true
+            }
+            return@addOnBackCallback false
+        }
 
         return binding.root
     }

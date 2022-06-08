@@ -78,7 +78,31 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mediaServiceConnection: MediaServiceConnection
 
+    private val onBackCallbacks: MutableList<() -> Boolean> = ArrayList()
+
     var activityComponent: ActivityComponent? = null
+
+    /**
+     * Add a callback that will be called when onBackPressed is called on the Activity
+     * @param callback A function that returns a boolean that signifies whither the back press should be consumed
+     */
+    fun addOnBackCallback(callback: () -> Boolean) {
+        onBackCallbacks.add(callback)
+    }
+
+    /**
+     * invokes the onBackCallbacks until the onBackPress has been consumed
+     */
+    private fun onBackCallbacks(): Boolean {
+        for (callback in onBackCallbacks.reversed()) {
+            if (callback.invoke()) {
+                // when the onBack is consumed stop invoking and return
+                return true
+            }
+        }
+        // onBack was never consumed
+        return false
+    }
 
     override fun onDestroy() {
         activityComponent = null
@@ -154,7 +178,9 @@ class MainActivity : AppCompatActivity() {
             if (supportFragmentManager.backStackEntryCount == 0) {
                 // The prevent Q+ from leaking the activity internally, don't call
                 // super.onBackPressed() if at base fragment, manually end...
-                finishAfterTransition()
+                if (!onBackCallbacks()) {
+                    finishAfterTransition()
+                }
             } else {
                 super.onBackPressed()
             }
