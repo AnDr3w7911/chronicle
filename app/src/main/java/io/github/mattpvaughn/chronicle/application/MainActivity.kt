@@ -13,12 +13,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import io.github.mattpvaughn.chronicle.NavGraphDirections
 import io.github.mattpvaughn.chronicle.R
 import io.github.mattpvaughn.chronicle.application.MainActivityViewModel.BottomSheetState.COLLAPSED
 import io.github.mattpvaughn.chronicle.application.MainActivityViewModel.BottomSheetState.EXPANDED
@@ -113,13 +115,36 @@ class MainActivity : AppCompatActivity() {
         viewModel.errorMessage.observeEvent(this) { errorMessage ->
             Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
         }
-        binding.bottomNav.setupWithNavController(navController = binding.fragNavHost.getFragment<NavHostFragment>().navController)
+        val navController = binding.fragNavHost.getFragment<NavHostFragment>().navController
+        binding.bottomNav.setupWithNavController(navController = navController)
+
+        plexLoginRepo.loginEvent.observe(
+            this,
+            Observer { event ->
+                if (event.hasBeenHandled) {
+                    return@Observer
+                }
+                Timber.i("Login event changed to ${event.peekContent()}")
+                when (event.getContentIfNotHandled()) {
+                    IPlexLoginRepo.LoginState.LOGGED_IN_NO_USER_CHOSEN -> navController.navigate(R.id.chooseUserFragment)
+                    IPlexLoginRepo.LoginState.LOGGED_IN_NO_SERVER_CHOSEN -> navController.navigate(R.id.chooseServerFragment)
+                    IPlexLoginRepo.LoginState.LOGGED_IN_NO_LIBRARY_CHOSEN -> navController.navigate(R.id.chooseLibraryFragment)
+                    LOGGED_IN_FULLY -> navController.navigate(R.id.homeFragment)
+                    IPlexLoginRepo.LoginState.FAILED_TO_LOG_IN -> {
+                    }
+                    IPlexLoginRepo.LoginState.NOT_LOGGED_IN -> navController.navigate(NavGraphDirections.actionGlobalLoginFragment())
+                    IPlexLoginRepo.LoginState.AWAITING_LOGIN_RESULTS -> {
+                    }
+                    else -> throw NoWhenBranchMatchedException("Unknown login event: $event")
+                }
+            }
+        )
 
         if (savedInstanceState == null) {
             setupCurrentlyPlaying()
             plexLoginRepo.loginEvent.value?.let {
                 if (it.peekContent() == LOGGED_IN_FULLY) {
-//                    navigator.showHome()
+                    navController.navigate(R.id.homeFragment)
                 }
             }
         }

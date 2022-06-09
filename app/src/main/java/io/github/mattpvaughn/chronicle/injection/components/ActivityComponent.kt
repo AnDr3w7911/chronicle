@@ -16,13 +16,11 @@ import io.github.mattpvaughn.chronicle.features.settings.SettingsFragment
 import io.github.mattpvaughn.chronicle.features.settings.SettingsViewModel
 import io.github.mattpvaughn.chronicle.injection.modules.ActivityModule
 import io.github.mattpvaughn.chronicle.injection.scopes.ActivityScope
-import io.github.mattpvaughn.chronicle.navigation.Navigator
 import io.github.mattpvaughn.chronicle.views.ModalBottomSheetSpeedChooser
 
 @ActivityScope
 @Component(dependencies = [AppComponent::class], modules = [ActivityModule::class])
 interface ActivityComponent {
-    fun navigator(): Navigator
     fun progressUpdater(): ProgressUpdater
     fun localBroadcastManager(): LocalBroadcastManager
     fun mediaServiceConnection(): MediaServiceConnection

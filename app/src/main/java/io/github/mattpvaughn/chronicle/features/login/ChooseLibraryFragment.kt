@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import io.github.mattpvaughn.chronicle.application.ChronicleApplication
 import io.github.mattpvaughn.chronicle.data.model.PlexLibrary
 import io.github.mattpvaughn.chronicle.data.sources.plex.IPlexLoginRepo
-import io.github.mattpvaughn.chronicle.data.sources.plex.PlexConfig
 import io.github.mattpvaughn.chronicle.data.sources.plex.PlexPrefsRepo
 import io.github.mattpvaughn.chronicle.databinding.OnboardingPlexChooseLibraryBinding
 import io.github.mattpvaughn.chronicle.util.Event
@@ -34,9 +33,6 @@ class ChooseLibraryFragment : Fragment() {
     private lateinit var viewModel: ChooseLibraryViewModel
 
     private lateinit var libraryAdapter: LibraryListAdapter
-
-    @Inject
-    lateinit var plexConfig: PlexConfig
 
     @Inject
     lateinit var plexPrefs: PlexPrefsRepo
