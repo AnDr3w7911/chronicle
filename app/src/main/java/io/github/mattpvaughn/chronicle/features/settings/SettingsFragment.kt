@@ -12,7 +12,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import io.github.mattpvaughn.chronicle.R
 import io.github.mattpvaughn.chronicle.application.ChronicleBillingManager
 import io.github.mattpvaughn.chronicle.application.MainActivity
 import io.github.mattpvaughn.chronicle.data.local.IBookRepository
@@ -129,7 +131,7 @@ class SettingsFragment : Fragment() {
                 }
             }
         )
-
+        activity?.findNavController(R.id.fragNavHost)?.addOnDestinationChangedListener { _, _, _ -> viewModel.setBottomSheetVisibility(false) }
         return binding.root
     }
 }

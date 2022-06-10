@@ -233,6 +233,7 @@ class LibraryFragment : Fragment() {
                 }
             }
         )
+        activity?.findNavController(R.id.fragNavHost)?.addOnDestinationChangedListener { _, _, _ -> viewModel.setFilterMenuVisible(false) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
