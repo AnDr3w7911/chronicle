@@ -100,6 +100,10 @@ class SettingsViewModel(
         }
     }
 
+    fun isBottomSheetVisible(): Boolean {
+        return _bottomChooserState.value?.shouldShow ?: false
+    }
+
     private var _messageForUser = MutableLiveData<Event<FormattableString>>()
     val messageForUser: LiveData<Event<FormattableString>>
         get() = _messageForUser

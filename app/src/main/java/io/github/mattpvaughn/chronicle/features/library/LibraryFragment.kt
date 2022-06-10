@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -213,12 +215,24 @@ class LibraryFragment : Fragment() {
     private fun openAudiobookDetails(audiobook: Audiobook) {
         val action = LibraryFragmentDirections.actionLibraryFragmentToAudiobookDetailsFragment(audiobook.id, audiobook.title, audiobook.isCached)
         activity?.findNavController(R.id.fragNavHost)?.navigate(action)
-//        (activity?.supportFragmentManager?.findFragmentById(R.id.fragNavHost) as NavHostFragment).navController.navigate(action)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        activity?.onBackPressedDispatcher?.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (viewModel.isFilterShown.value == true) {
+                        viewModel.setFilterMenuVisible(false)
+                    } else {
+                        isEnabled = false
+                        activity?.onBackPressed()
+                    }
+                }
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

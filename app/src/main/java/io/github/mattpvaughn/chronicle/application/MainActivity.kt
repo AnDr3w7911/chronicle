@@ -117,6 +117,9 @@ class MainActivity : AppCompatActivity() {
         }
         val navController = binding.fragNavHost.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navController = navController)
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            collapseCurrentlyPlaying()
+        }
 
         plexLoginRepo.loginEvent.observe(
             this,
@@ -160,10 +163,17 @@ class MainActivity : AppCompatActivity() {
         handleNotificationIntent(intent)
     }
 
-    override fun onBackPressed() {
-        // If currently playing view is over fragments, close it via back button
+    private fun collapseCurrentlyPlaying(): Boolean {
         if (viewModel.currentlyPlayingLayoutState.value == EXPANDED) {
             viewModel.setBottomSheetState(COLLAPSED)
+            return true
+        }
+        return false
+    }
+
+    override fun onBackPressed() {
+        // If currently playing view is over fragments, close it via back button
+        if (collapseCurrentlyPlaying()) {
             return
         }
         super.onBackPressed()
